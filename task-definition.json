@@ -1,0 +1,94 @@
+{
+    "containerDefinitions": [{
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/tomproxy",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "portMappings": [{
+                "hostPort": 0,
+                "protocol": "tcp",
+                "containerPort": 80
+            }],
+            "cpu": 256,
+            "memory": 256,
+            "image": "511976418858.dkr.ecr.us-east-1.amazonaws.com/reverse-proxy",
+            "essential": true,
+            "links": [
+                "app"
+            ],
+            "name": "nginx"
+        },
+        {
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/tomproxy",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "cpu": 256,
+            "mountPoints": [{
+                "containerPath": "/usr/local/tomcat/logs",
+                "sourceVolume": "logs"
+            }],
+            "memory": 512,
+            "image": "tomcat:alpine",
+            "essential": true,
+            "name": "app"
+        },
+        {
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/tomproxy",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "portMappings": [],
+            "command": [
+                "/var/log/localhost_access_log.*.txt"
+            ],
+            "mountPoints": [{
+                "containerPath": "/var/log",
+                "sourceVolume": "logs"
+            }],
+            "memory": 128,
+            "image": "511976418858.dkr.ecr.us-east-1.amazonaws.com/logger:restart",
+            "essential": true,
+            "name": "accesslog"
+        },
+        {
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/tomproxy",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "command": [
+                "/var/log/catalina.*.log"
+            ],
+            "mountPoints": [{
+                "containerPath": "/var/log",
+                "sourceVolume": "logs"
+            }],
+            "memory": 128,
+            "image": "511976418858.dkr.ecr.us-east-1.amazonaws.com/logger:restart",
+
+            "name": "catalinalog"
+        }
+    ],
+    "taskRoleArn": "arn:aws:iam::511976418858:role/catsndogs0-catsContainerTaskRole-DTS38WBBWEZ1",
+    "family": "tomproxy2",
+    "networkMode": "bridge",
+    "volumes": [{
+        "name": "logs"
+    }]
+}
