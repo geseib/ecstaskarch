@@ -1,5 +1,5 @@
 ecstaskarch
-sidecar reference architeture for Tomcat application using Amaazon ECS taskdefinition
+sidecar reference architeture for Tomcat application using Amazon ECS taskdefinition
 
 ## Sidecars ##
 by moving processes out of the main application container, but tightly coupled, we create a more stable, secure environment fot the application. it also simplifies support. of course automatic sidecar injection will take this a step further. But baby steps...
